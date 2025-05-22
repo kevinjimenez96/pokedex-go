@@ -8,32 +8,32 @@ import (
 	"github.com/kevinjimenez96/pokedex/internal/pokecache"
 )
 
-var l = LocationsClient{
+var locationsClient = LocationsClient{
 	next:     "",
 	previous: "",
 	client: Client{
-		Cache: pokecache.NewCache(time.Duration(5 * time.Second)),
+		Cache: pokecache.NewCache(time.Duration(cacheTTL)),
 	},
 }
 
 func GetNextLocations() ([]LocationArea, error) {
-	if l.next == "" {
-		l.next = baseUrl + locationsPath
+	if locationsClient.next == "" {
+		locationsClient.next = BaseURL + LocationsPath
 	}
 
-	return getLocations(l.next)
+	return getLocations(locationsClient.next)
 }
 
 func GetPreviousLocations() ([]LocationArea, error) {
-	if l.previous == "" {
+	if locationsClient.previous == "" {
 		return nil, fmt.Errorf("you're on the first page")
 	}
 
-	return getLocations(l.previous)
+	return getLocations(locationsClient.previous)
 }
 
 func GetLocation(location string) (LocationResponse, error) {
-	data, err := l.client.GetCached(fmt.Sprintf(baseUrl+locationPath, location))
+	data, err := locationsClient.client.GetCached(fmt.Sprintf(BaseURL+LocationPath, location))
 	if err != nil {
 		return LocationResponse{}, err
 	}
@@ -48,7 +48,7 @@ func GetLocation(location string) (LocationResponse, error) {
 }
 
 func getLocations(url string) ([]LocationArea, error) {
-	data, err := l.client.GetCached(url)
+	data, err := locationsClient.client.GetCached(url)
 
 	if err != nil {
 		return nil, err
@@ -61,8 +61,8 @@ func getLocations(url string) ([]LocationArea, error) {
 		return nil, fmt.Errorf("error unmarshaling response: %w", err)
 	}
 
-	l.next = locationsResponse.Next
-	l.previous = locationsResponse.Previous
+	locationsClient.next = locationsResponse.Next
+	locationsClient.previous = locationsResponse.Previous
 
 	return locationsResponse.Results, nil
 }

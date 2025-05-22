@@ -35,11 +35,35 @@ type Location struct {
 	URL  string `json:"url"`
 }
 
-type Pokemon struct {
+type PokemonE struct {
 	Name string `json:"name"`
 	URL  string `json:"url"`
 }
 
 type PokemonEncounters struct {
-	Pokemon Pokemon `json:"pokemon"`
+	Pokemon PokemonE `json:"pokemon"`
+}
+
+type Pokemon struct {
+	Name           string `json:"name"`
+	BaseExperience int    `json:"base_experience"`
+	Height         int    `json:"height"`
+	Weight         int    `json:"weight"`
+	Stats          []Stat `json:"stats"`
+	Types          []Type `json:"types"`
+}
+
+type Stat struct {
+	Stat struct {
+		Name string `json:"name"`
+		URL  string `json:"url"`
+	} `json:"stat"`
+	BaseStat int `json:"base_stat"`
+}
+
+type Type struct {
+	Type struct {
+		Name string `json:"name"`
+		URL  string `json:"url"`
+	} `json:"type"`
 }
